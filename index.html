@@ -38,12 +38,19 @@ function gotUpInput() {
 }
 function enterButtonClicked() {
    let angle = (upNumberInput.value * Math.PI) / underNumberInput.value;
+   let rotationNum = angle / (2 * Math.PI);
+   let trunkedRotationNum = Math.trunk(rotationNum);
    clear();
    drawCircle(80);
    drawLine(0,center[1],canvas.width,center[1]);
    drawLine(center[0],0,center[0],canvas.height);
+   for (let i = 1; i <= trunkedRotationNum;i++){
+       let step = 80 / trunkedRotationNum;
+       drawCircle(i * step,'green');
+   }
    drawAngle(angle);
-   document.getElementById("displayRotationNum").innerHTML = `${angle / (2 * Math.PI)}`;
+   document.getElementById("displayN").innerHTML = `${Math.floor(rotationNum)}`;
+   document.getElementById("displayRotationNum").innerHTML = `${rotationNum}`;
 }
 </script>
 <table width="30%" cellspacing="0px">
@@ -61,6 +68,11 @@ function enterButtonClicked() {
 <th><div id="displayRotationNum"></div></th>
 </td>
 </tr>
+<tr>
+<th>N</th>
+<td>
+<th><div id="displayN"></div></th>
+</td>
 </table>
 <canvas id="circleCanvas"width="200" height="200" style="border:1px solid #000;">
 <script>
@@ -74,11 +86,35 @@ function enterButtonClicked() {
       ctx.strokeStyle = color;
       ctx.stroke();
   }
+  function getFraction(num){
+      let copyNum = [...num];
+      while(true){
+           let remainder = copyNum[0] % copyNum[1]
+           if (remainder !== 0){
+              copyNum[1] = copyNum[0];
+              copyNum[1] = remainder;
+           }else{
+              break;
+           }
+      }
+      return [num[0] / copyNum[1],num[1] / copyNum[1]];
+  }    
+  function displayRadToFraction(degree){
+      let piNum = degree / 180;
+      if (piNum % 1 === 0){
+         document.getElementById("displayRad").innerHTML = `${piNum}π`;
+      }else{
+         let fraction = getFraction([degree,180]);
+         document.getElementById("displayRad").innerHTML = `${fraction[0]}π / {fraction[1]}`;
+      }
+  }
   function getRad(linePos) {
       let x = linePos[0] - center[0];
       let y = linePos[1] - center[1];
       let radian = Math.atan2(x,y);
-     document.getElementById("displayRad").innerHTML = `${radian}π`;
+      let degree = radian * (180 / Math.PI);
+      let upNum = 0;
+     displayRadToFraction(degree);
      return radian;
   }
   function getVectorDis(Vector) {
@@ -114,9 +150,8 @@ function enterButtonClicked() {
 </script>
 </canvas>
 <p>※バグやエラー等があればお知らせください</p>
-<p><em>このツールを無断でインターネット上に公開するような行為はお控えください</em></p>
 <p>このツールを使用して起きたいかなる損害、問題などに関して作者は一切の責任を負いません。</p>
-<p><small><font size="1" color="gray">©2025 The Author Of This Tool All Rights Reserved</small></p>
+<p><small><font size="1" color="gray">©2025 site-creator All Rights Reserved</small></p>
 </center>
 </body>
 </html>
