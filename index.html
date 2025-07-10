@@ -39,7 +39,7 @@ function gotUpInput() {
 function enterButtonClicked() {
    let angle = (upNumberInput.value * Math.PI) / underNumberInput.value;
    let rotationNum = angle / (2 * Math.PI);
-   let truncedRotationNum = Math.trunc(rotationNum);
+   let truncedRotationNum = Math.abs(Math.trunc(rotationNum));
    clear();
    drawCircle(90);
    drawLine(0,center[1],canvas.width,center[1]);
@@ -50,9 +50,14 @@ function enterButtonClicked() {
       let step = 50 / truncedRotationNum;
       for (let i = 0; i < truncedRotationNum;i++){
          drawCircle(i * step + step,center,"red");
-         angle -= 2 * Math.PI;
+         if (rotationNum > 0){
+            angle -= 2 * Math.PI;
+         }else if (rotationNum < 0){
+            angle += 2 * Math.PI
          }
-      drawAngle(truncedRotationNum * step + step,angle);
+         }
+           drawAngle(truncedRotationNum * step + step,angle);
+       
    }
    displayAlpha(rotationNum,Math.floor(rotationNum),angle);
    document.getElementById("displayN").innerHTML = `${Math.floor(rotationNum)}`;
