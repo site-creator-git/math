@@ -56,7 +56,9 @@ function enterButtonClicked() {
          }
       }
    }
-   
+   if (angle < 0){
+      truncedRotationNum = Math.floor(rotationNum);
+   }
    displayAlpha(rotationNum,truncedRotationNum,angle);
    document.getElementById("displayN").innerHTML = `${Math.floor(rotationNum)}`;
    document.getElementById("displayRotationNum").innerHTML = `${rotationNum}`;
@@ -140,8 +142,11 @@ function enterButtonClicked() {
       }
   }
   function displayAlpha(rotationNum,n,angle) {
-      let radian = rotationNum - n;
-      let degree = angle * (180 / Math.PI);
+       let degree = angle * (180 / Math.PI);
+      if (angle < 0){
+         angle = Math.abs(n - rotationNum);
+         degree = 360 * angle;
+      }
      displayAlphaToFraction(degree);
   }
   function getVectorDis(Vector) {
