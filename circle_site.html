@@ -1,0 +1,122 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<center>
+<title>数学A</title>
+<h1>数学</h1>
+</head>
+<body>
+<p>単位円に点を書いてくれるツール</p>
+<p><font color="red"><em>前提として<br>円の図の右側が正<br>同じく、円の図の上側が正とする。</em></font></p>
+<p><input type="number" id="upNumber" min="-1000" max="1000" value="1" placeholder="分子を入力してください" oninput="gotUpInput()">π</p>
+<p><hr size="4px" width="30%" noshade></p>
+<p><input type="number" id="underNumber" min="-1000" max="1000" value="2" placeholder="分母を入力してください" oninput="gotUnderInput()"></p>
+<p><button type="button" id="enterButton" onclick="enterButtonClicked()">入力</button></p>
+<script>
+const enterButton = document.querySelector('#enterButton');
+const underNumberInput = document.querySelector('#underNumber');
+const upNumberInput = document.querySelector('#upNumber');
+function gotUnderInput() {
+    if (underNumberInput.value === "") {
+       enterButton.disabled = false;
+    }
+    if (underNumberInput.value === "0") {
+       alert("分母に0は入力できません");
+       underNumberInput.value = 2;
+    }
+ }
+function gotUpInput() {
+    if (underNumberInput.value === "") {
+       enterButton.disabled = false;
+    }
+    if (upNumberInput.value === "0") {
+       alert("意味のない計算を検知しました:0 * π");
+       underNumberInput.value = 1;
+    }
+}
+function enterButtonClicked() {
+   let angle = (upNumberInput.value * Math.PI) / underNumberInput.value;
+   clear();
+   drawCircle(80);
+   drawLine(0,center[1],canvas.width,center[1]);
+   drawLine(center[0],0,center[0],canvas.height);
+   drawAngle(angle);
+   document.getElementById("displayRotationNum").innerHTML = `${angle / (2 * Math.PI)}`;
+}
+</script>
+<table width="30%" cellspacing="0px">
+<col align="center">
+<caption>値</caption>
+<tr>
+<th>ラジアン</th>
+<td>
+<th><div id="displayRad"></div></th>
+</td>
+</tr>
+<tr>
+<th>回転数</th>
+<td>
+<th><div id="displayRotationNum"></div></th>
+</td>
+</tr>
+</table>
+<canvas id="circleCanvas"width="200" height="200" style="border:1px solid #000;">
+<script>
+  const canvas = document.getElementById('circleCanvas');
+  const ctx = canvas.getContext('2d');
+  var center = [canvas.width / 2,canvas.height / 2];
+  function drawLine(posX,posY,lengthX,lengthY,color = 'blue') {
+      ctx.beginPath();
+      ctx.moveTo(posX,posY);
+      ctx.lineTo(lengthX,lengthY);
+      ctx.strokeStyle = color;
+      ctx.stroke();
+  }
+  function getRad(linePos) {
+      let x = linePos[0] - center[0];
+      let y = linePos[1] - center[1];
+      let radian = Math.atan2(x,y);
+     document.getElementById("displayRad").innerHTML = `${radian}π`;
+     return radian;
+  }
+  function getVectorDis(Vector) {
+    return Math.sqrt(Vector[0] * Vector[0] + Vector[1] * Vector[1]);
+ }
+  function drawCircle(r,pos = center,color = "black",fill = false) {
+   ctx.beginPath();
+   ctx.arc(pos[0], pos[1], r, 0, Math.PI * 2);
+   ctx.strokeStyle = color;
+   if (fill) {
+      ctx.fillStyle = color;
+      ctx.fill();
+   }
+   ctx.stroke();
+ }
+  function drawAngle(angle) {
+   let r = 40;
+   let reverce = true;
+   if (angle < 0) {
+      reverce = false;
+   }
+   ctx.beginPath();
+   ctx.arc(center[0], center[1], r, 0, -angle,reverce);
+   ctx.strokeStyle = 'green';
+   ctx.stroke();
+   document.getElementById("displayRad").innerHTML = `${angle}`;
+   let endPos = [center[0] + r * Math.cos(-angle),center[1] + r * Math.sin(-angle)];
+   drawCircle(1,endPos,"red",true);
+}
+  function clear() {
+   ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+</script>
+</canvas>
+<p>※バグやエラー等があればお知らせください</p>
+<p><em>このツールを無断でインターネット上に公開するような行為はお控えください</em></p>
+<p>このツールを使用して起きたいかなる損害、問題などに関して作者は一切の責任を負いません。</p>
+<p><small><font size="1" color="gray">©2025 The Author Of This Tool All Rights Reserved</small></p>
+</center>
+</body>
+</html>
