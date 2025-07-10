@@ -41,25 +41,20 @@ function enterButtonClicked() {
    let rotationNum = angle / (2 * Math.PI);
    let truncedRotationNum = Math.trunc(rotationNum);
    clear();
-   drawCircle(80);
+   drawCircle(90);
    drawLine(0,center[1],canvas.width,center[1]);
    drawLine(center[0],0,center[0],canvas.height);
    if (truncedRotationNum <= 1 && truncedRotationNum >= -1){
          drawAngle(40,angle);
    }else if (truncedRotationNum !== 0){
-      for (let i = 1; i <= truncedRotationNum;i++){
-         let step = 70 / truncedRotationNum;
-          if (i === truncedRotationNum){
-             drawAngle(i * step,angle);
-         }else{
-             drawCircle(i * step,center,"green");
+      let step = 50 / truncedRotationNum;
+      for (let i = 0; i < truncedRotationNum;i++){
+         drawCircle(i * step + step,center,"red");
+         angle -= 2 * Math.PI;
          }
-      }
+      drawAngle(truncedRotationNum * step + step,angle);
    }
-   if (angle < 0){
-      truncedRotationNum = Math.floor(rotationNum);
-   }
-   displayAlpha(rotationNum,truncedRotationNum,angle);
+   displayAlpha(rotationNum,Math.floor(rotationNum),angle);
    document.getElementById("displayN").innerHTML = `${Math.floor(rotationNum)}`;
    document.getElementById("displayRotationNum").innerHTML = `${rotationNum}`;
 }
@@ -109,7 +104,7 @@ function enterButtonClicked() {
       while(1){
            let remainder = copyNum[0] % copyNum[1];
            if (remainder !== 0){
-              copyNum[1] = copyNum[0];
+              copyNum[0] = copyNum[1];
               copyNum[1] = remainder;
               GreatestCommonDivisor = remainder;
            }else{
@@ -142,11 +137,8 @@ function enterButtonClicked() {
       }
   }
   function displayAlpha(rotationNum,n,angle) {
-       let degree = angle * (180 / Math.PI);
-      if (angle < 0){
-         angle = Math.abs(n - rotationNum);
-         degree = 360 * angle;
-      }
+     angle = Math.abs(n - rotationNum).toFixed(2);
+     let degree = 360 * angle;
      displayAlphaToFraction(degree);
   }
   function getVectorDis(Vector) {
