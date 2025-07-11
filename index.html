@@ -41,14 +41,15 @@ function enterButtonClicked() {
    let angle = (upNumberInput.value * Math.PI) / underNumberInput.value;
    let rotationNum = angle / (2 * Math.PI);
    let truncedRotationNum = Math.abs(Math.trunc(rotationNum));
+   rotationNum = parseFloat(rotationNum.toPrecision(3));
    clear();
    drawCircle(90);
    drawLine(0,center[1],canvas.width,center[1]);
    drawLine(center[0],0,center[0],canvas.height);
-   if (truncedRotationNum <= 1 && truncedRotationNum >= -1){
+   if (truncedRotationNum < 1 && truncedRotationNum > -1){
          drawAngle(40,angle);
    }else if (truncedRotationNum !== 0){
-      let step = 50 / truncedRotationNum;
+      let step = 50 / (truncedRotationNum + 1);
       for (let i = 0; i < truncedRotationNum;i++){
          drawCircle(i * step + step,center,"red");
          if (rotationNum > 0){
@@ -57,7 +58,7 @@ function enterButtonClicked() {
             angle += 2 * Math.PI
          }
          }
-           drawAngle(truncedRotationNum * step + step,angle);
+           drawAngle(50,angle);
        
    }
    displayAlpha(rotationNum,Math.floor(rotationNum),angle);
@@ -173,7 +174,7 @@ function enterButtonClicked() {
    if (angle < 0) {
       reverce = false;
    }
-   ctx.lineWidth = 1;
+   ctx.lineWidth = 3;
    ctx.beginPath();
    ctx.arc(center[0], center[1], r, 0, -angle,reverce);
    ctx.strokeStyle = 'green';
