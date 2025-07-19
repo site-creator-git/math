@@ -140,14 +140,6 @@ function enterButtonClicked() {
       ctx.strokeStyle = color;
       ctx.stroke();
   }
-function gcd(a,b){
-     while (b !== 0){
-        let repeat = b;
-        b = a % b;
-        a = repeat;
-    }
-    return Math.abs(a);
-}
   function getFraction(num){
      let up = Number(upNumberInput.value);
      let under = Number(underNumberInput.value);
