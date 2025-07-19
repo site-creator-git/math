@@ -7,7 +7,7 @@
 <title>数学A</title>
 <h1>数学</h1>
 </head>
-<body style="background:linear-gradient(to top, blue, navy);">
+<body style="background:linear-gradient(to top, navy, black);" text="white">
 <p>単位円に線を書いてくれるツール</p>
 <p><font color="red"><em>前提として<br>円の図の右側が正<br>同じく、円の図の上側が正とする。</em></font></p>
 <a href="explanation.html">解説画面へ移動</a>
@@ -132,7 +132,7 @@ function enterButtonClicked() {
   const canvas = document.getElementById('circleCanvas');
   const ctx = canvas.getContext('2d');
   var center = [canvas.width / 2,canvas.height / 2];
-  function drawLine(posX,posY,lengthX,lengthY,color = 'blue',width = 1) {
+  function drawLine(posX,posY,lengthX,lengthY,color = 'white',width = 1) {
       ctx.beginPath();
       ctx.lineWidth = width;
       ctx.moveTo(posX,posY);
@@ -176,7 +176,7 @@ function enterButtonClicked() {
   function getVectorDis(Vector) {
     return Math.sqrt(Vector[0] * Vector[0] + Vector[1] * Vector[1]);
  }
-  function drawCircle(r,pos = center,color = "black",fill = false) {
+  function drawCircle(r,pos = center,color = "white",fill = false) {
    ctx.lineWidth = 1.5;
    ctx.beginPath();
    ctx.arc(pos[0], pos[1], r, 0, Math.PI * 2);
@@ -199,7 +199,7 @@ function enterButtonClicked() {
    ctx.stroke();
    let endPos = [center[0] + circleR * Math.cos(-angle),center[1] + circleR * Math.sin(-angle)];
    drawCircle(1.5,endPos,"red",true);
-   drawLine(center[0],center[1],endPos[0],endPos[1],"black",2);
+   drawLine(center[0],center[1],endPos[0],endPos[1],"red",2);
 }
   function clear() {
    ctx.clearRect(0, 0, canvas.width, canvas.height);
