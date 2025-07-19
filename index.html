@@ -17,8 +17,9 @@
 <p><button type="button" id="enterButton" onclick="enterButtonClicked()">入力</button></p>
 <script>
 const enterButton = document.querySelector('#enterButton');
-const underNumberInput = document.querySelector('#underNumber');
-const upNumberInput = document.querySelector('#upNumber');
+var underNumberInput = document.getElementById("underNumber");
+var upNumberInput = document.getElementById("upNumber");
+const circleR = 90;
 function gotUnderInput() {
     if (underNumberInput.value === "") {
        enterButton.disabled = false;
@@ -37,19 +38,27 @@ function gotUpInput() {
        underNumberInput.value = 1;
     }
 }
+function tbtz(trigonometricFunctions){
+   const limit = 1e-10;
+   if (Math.abs(trigonometricFunctions) < limit){
+      return 0;
+   }else{
+      return Math.round(trigonometricFunctions * 100) / 100;
+   }
+}
 function enterButtonClicked() {
    let angle = (upNumberInput.value * Math.PI) / underNumberInput.value;
    let rotationNum = angle / (2 * Math.PI);
    let truncedRotationNum = Math.abs(Math.trunc(rotationNum));
    rotationNum = parseFloat(rotationNum.toPrecision(3));
    clear();
-   drawCircle(90);
+   drawCircle(circleR);
    drawLine(0,center[1],canvas.width,center[1]);
    drawLine(center[0],0,center[0],canvas.height);
    if (truncedRotationNum < 1 && truncedRotationNum > -1){
-         drawAngle(40,angle);
+         drawAngle(circleR / 2,angle);
    }else if (truncedRotationNum !== 0){
-      let step = 50 / (truncedRotationNum + 1);
+      let step = (circleR - 30) / (truncedRotationNum + 1);
       for (let i = 0; i < truncedRotationNum;i++){
          drawCircle(i * step + step,center,"red");
          if (rotationNum > 0){
@@ -64,6 +73,14 @@ function enterButtonClicked() {
    displayAlpha(rotationNum,Math.floor(rotationNum),angle);
    document.getElementById("displayN").innerHTML = `${Math.floor(rotationNum)}`;
    document.getElementById("displayRotationNum").innerHTML = `${rotationNum}`;
+   let cos = tbtz(Math.cos(angle));
+   document.getElementById("displaySin").innerHTML = `${tbtz(Math.sin(angle))}`;
+   document.getElementById("displayCos").innerHTML = `${cos}`;
+   if (cos === 0){
+      document.getElementById("displayTan").textContent = `なし`;
+   }else{
+      document.getElementById("displayTan").innerHTML = `${tbtz(Math.tan(angle))}`;
+   }
 }
 </script>
 <table width="30%" cellspacing="0px">
@@ -91,6 +108,24 @@ function enterButtonClicked() {
 <th><div id="displayDegree"></div></th>
 </td>
 </tr>
+<tr>
+<th>sin</th>
+<td>
+<th><div id="displaySin"></div></th>
+</td>
+</tr>
+<tr>
+<th>cos</th>
+<td>
+<th><div id="displayCos"></div></th>
+</td>
+</tr>
+<tr>
+<th>tan</th>
+<td>
+<th><div id="displayTan"></div></th>
+</td>
+</tr>
 </table>
 <canvas id="circleCanvas"width="200" height="200" style="border:1px solid #000;">
 <script>
@@ -105,29 +140,28 @@ function enterButtonClicked() {
       ctx.strokeStyle = color;
       ctx.stroke();
   }
+function gcd(a,b){
+     while (b !== 0){
+        let repeat = b;
+        b = a % b;
+        a = repeat;
+    }
+    return Math.abs(a);
+}
   function getFraction(num){
-      let copyNum = [num[0],num[1]];
-      let GreatestCommonDivisor = 0;
-      while(1){
-           let remainder = copyNum[0] % copyNum[1];
-           if (remainder !== 0){
-              copyNum[0] = copyNum[1];
-              copyNum[1] = remainder;
-              GreatestCommonDivisor = remainder;
-           }else{
-              break;
-           }
-      }
-      let result = [num[0] / GreatestCommonDivisor,num[1] / GreatestCommonDivisor];
-      if (result[1] < 0){
-         result[0] *= -1;
-         result[1] *= -1;
-      }
-      return result;
-  }    
+     let up = Number(upNumberInput.value);
+     let under = Number(underNumberInput.value);
+     let result = [];
+     let rotationNum = (up * Math.PI / under) / (Math.PI * 2);
+     let n = Math.floor(rotationNum);
+     let twoND = (-2 * n * under);
+     result[0] = up + twoND;
+     result[1] = under;
+    return result;
+}
   function displayAlphaToFraction(degree){
       let piNum = degree / 180;
-      document.getElementById("displayDegree").innerHTML = `${degree}°`;
+      document.getElementById("displayDegree").innerHTML = `${Math.round(degree * 1000) / 1000}°`;
       if (piNum % 1 === 0){
          if (piNum === 1 || piNum === -1){
              document.getElementById("displayAlpha").innerHTML = `π`;
@@ -135,7 +169,7 @@ function enterButtonClicked() {
              document.getElementById("displayAlpha").innerHTML = `${piNum}π`;
          }
       }else{
-         let fraction = getFraction([degree,180]);
+         let fraction = getFraction(degree);
          if (fraction[0] === 1 || fraction[0] === -1){
              document.getElementById("displayAlpha").innerHTML = `π / ${fraction[1]}`;
          }else{
@@ -144,15 +178,14 @@ function enterButtonClicked() {
       }
   }
   function displayAlpha(rotationNum,n,angle) {
-     angle = Math.abs(n - rotationNum).toFixed(2);
-     let degree = 360 * angle;
+     let degree = angle * (180 / Math.PI);
      displayAlphaToFraction(degree);
   }
   function getVectorDis(Vector) {
     return Math.sqrt(Vector[0] * Vector[0] + Vector[1] * Vector[1]);
  }
   function drawCircle(r,pos = center,color = "black",fill = false) {
-   ctx.lineWidth = 1;
+   ctx.lineWidth = 1.5;
    ctx.beginPath();
    ctx.arc(pos[0], pos[1], r, 0, Math.PI * 2);
    ctx.strokeStyle = color;
@@ -162,13 +195,6 @@ function enterButtonClicked() {
    }
    ctx.stroke();
  }
-  function getDirectionTo(pos,targetPos){
-     let direction = [];
-     for (let i = 0; i < 2; i++){
-          direction[i] = targetPos[i] - pos[i];
-     }
-     return direction;
-}
   function drawAngle(r,angle) {
    let reverce = true;
    if (angle < 0) {
@@ -179,10 +205,9 @@ function enterButtonClicked() {
    ctx.arc(center[0], center[1], r, 0, -angle,reverce);
    ctx.strokeStyle = 'green';
    ctx.stroke();
-   let endPos = [center[0] + r * Math.cos(-angle),center[1] + r * Math.sin(-angle)];
-   drawCircle(1,endPos,"red",true);
-   let dir = getDirectionTo(center,endPos);
-   drawLine(center[0],center[1],endPos[0] + dir[0],endPos[1] + dir[1],"black",2);
+   let endPos = [center[0] + circleR * Math.cos(-angle),center[1] + circleR * Math.sin(-angle)];
+   drawCircle(1.5,endPos,"red",true);
+   drawLine(center[0],center[1],endPos[0],endPos[1],"black",2);
 }
   function clear() {
    ctx.clearRect(0, 0, canvas.width, canvas.height);
